@@ -1,6 +1,6 @@
 import org.scalatest.{FunSpec, Matchers}
 import ar.edu.unq.o3.Golondrina
-import ar.edu.unq.o3.model.{Buzo, Reliquia, Submarino}
+import ar.edu.unq.o3.model.{Buzo, Reliquia}
 
 class GolondrinaSpec extends FunSpec with Matchers {
 
@@ -24,8 +24,14 @@ class GolondrinaSpec extends FunSpec with Matchers {
       assert(b.size == 4)
     }
 
-    it("creando un submarino") {
-      println( Submarino(List[Buzo](), List[Reliquia]()) )
+    it("sladfjasdkldfjalkfj") {
+//      var a = 1 :: List[Int]()
+//      var b = List(1,2,3).foldRight(List[Int]()) { (i, acc) => i :: acc }
+//      println("right: " + b)
+//      var c = List(1,2,3).foldLeft(List[Int]()) { (acc,i) => i :: acc }
+//      println("left: " + b)
+      var d = List[Int](1,2,3,4,5,6).span( (i:Int) => {println(i!=4); i!=4} )
+      println(d)
     }
 
   }

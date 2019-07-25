@@ -1,6 +1,6 @@
 package ar.edu.unq.o3.model
 
-case class Buzo(reliquias: List[Reliquia]) { }
+case class Buzo(nombre: String, reliquias: List[Reliquia]) { }
 
 case class Reliquia(valor: Int) { }
 

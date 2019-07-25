@@ -10,7 +10,7 @@ case class Ronda() {}
 
 case class Turno() {}
 
-case class Direccion() { }
+trait Direccion { }
 
 case object Arriba extends Direccion {}
 
