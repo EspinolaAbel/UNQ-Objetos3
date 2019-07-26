@@ -1,5 +1,5 @@
 import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
-import ar.edu.unq.o3.{Bajar, Juego, Subir, Turno}
+import ar.edu.unq.o3._
 import ar.edu.unq.o3.model._
 
 class TurnoSpec extends FunSpec with Matchers with BeforeAndAfter {
@@ -58,10 +58,15 @@ class TurnoSpec extends FunSpec with Matchers with BeforeAndAfter {
 
   describe("un buzo nada en una direccion") {
 
-    var casilleros: List[Casillero] = null
+    var ubicaciones: List[Ubicacion] = null
+    var ubicaciones2: List[Ubicacion] = null
+    val buzo = Buzo("buzo1", List())
+    val buzoConReliquias = Buzo("buzo2", List(Reliquia(0),Reliquia(0)) )
+    val turno = new Turno(buzo, juego)
 
     before {
-      casilleros = List (
+      ubicaciones = List (
+        Submarino(buzo::List()),
         Casillero(null, null, Baja),
         Casillero(null, null, Baja),
         Casillero(null, null, Media),
@@ -71,11 +76,75 @@ class TurnoSpec extends FunSpec with Matchers with BeforeAndAfter {
         Casillero(null, null, Maxima),
         Casillero(null, null, Maxima)
       )
-      juego.tablero = Tablero(casilleros)
+      ubicaciones2 = List (
+        Submarino(buzoConReliquias::List()),
+        Casillero(null, null, Baja),
+        Casillero(null, null, Baja),
+        Casillero(null, null, Media),
+        Casillero(null, null, Media),
+        Casillero(null, null, Alta),
+        Casillero(null, null, Alta),
+        Casillero(null, null, Maxima),
+        Casillero(null, null, Maxima)
+      )
+      juego.tablero = Tablero(ubicaciones)
+      turno.aleatoriedad = new MockAleatoriedad
     }
 
-    it ("un buzo sin reliquias se mueve 3 casilleros hacia adelante") {
+    it ("un buzo sin reliquias se mueve 3 casilleros hacia abajo") {
+      turno.aleatoriedad.asInstanceOf[MockAleatoriedad].valor = 3
+      turno.elegirDireccionDeMovimiento(Bajar)
+      turno.nadar()
 
+      assert( juego.tablero.ubicaciones(3).asInstanceOf[Casillero].buzo == buzo )
+    }
+    it ("un buzo con 2 reliquias se quiere mover 3 casilleros hacia abajo pero se mueve 1 casillero hacia abajo") {
+      var turno = new Turno(buzoConReliquias, juego)
+      turno.aleatoriedad = new MockAleatoriedad
+      turno.aleatoriedad.asInstanceOf[MockAleatoriedad].valor = 3
+      juego.tablero = Tablero(ubicaciones2)
+      turno.elegirDireccionDeMovimiento(Bajar)
+      turno.nadar()
+
+      assert( juego.tablero.ubicaciones(1).asInstanceOf[Casillero].buzo == buzoConReliquias )
+    }
+
+  }
+
+  describe("recoger o abandonar una reliquia") {
+    val buzoSinReliquia = Buzo("buzo",List())
+    val buzoConReliquia = Buzo("buzoConReliquia",List(Reliquia(0)))
+    val ubicacionConReliquia: List[Ubicacion] = List (
+      Casillero(buzoSinReliquia, Reliquia(0), Baja),
+    )
+    val ubicacionSinReliquia: List[Ubicacion] = List (
+      Casillero(buzoConReliquia, null, Baja),
+    )
+
+    it("un buzo recoge una reliquia de su posicion actual") {
+      juego.tablero = Tablero(ubicacionConReliquia)
+      val turno = new Turno(buzoSinReliquia, juego)
+
+      turno.recogerTesoro(RecogerReliquia)
+
+      val casillero = juego.tablero.ubicaciones(0).asInstanceOf[Casillero]
+      val buzo = casillero.buzo
+
+      assert(casillero.reliquia == null)
+      assert(buzo.reliquias.length == 1)
+    }
+
+    it("un buzo abandona una reliquia de su posicion actual") {
+      juego.tablero = Tablero(ubicacionSinReliquia)
+      val turno = new Turno(buzoConReliquia, juego)
+
+      turno.recogerTesoro(AbandonarReliquia)
+
+      val casillero = juego.tablero.ubicaciones(0).asInstanceOf[Casillero]
+      val buzo = casillero.buzo
+
+      assert(casillero.reliquia != null)
+      assert(buzo.reliquias.length == 0)
     }
 
   }

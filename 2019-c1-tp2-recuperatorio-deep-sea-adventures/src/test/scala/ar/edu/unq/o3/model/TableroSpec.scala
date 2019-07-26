@@ -167,7 +167,6 @@ class TableroSpec extends FunSpec with Matchers with BeforeAndAfter {
     it ("intento mover al buzo buscado 0 lugares hacia abajo pero queda donde esta") {
       var posicionesIniciales = List (
         Casillero(null, null, Baja),
-        Casillero(null, null, Baja),
         Casillero(buzoBuscado, null, Baja),
         Casillero(null, null, Baja),
         Casillero(null, null, Baja),
