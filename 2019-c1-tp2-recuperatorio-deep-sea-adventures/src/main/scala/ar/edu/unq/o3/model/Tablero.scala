@@ -1,80 +1,95 @@
 package ar.edu.unq.o3.model
 
-import ar.edu.unq.o3.{Abajo, Arriba, Direccion}
+import ar.edu.unq.o3.{Bajar, Subir, Direccion}
 
-case class Tablero(posiciones: List[Casillero]) {
+case class Tablero(ubicaciones: List[Ubicacion]) {
 
-  def mover(direccion: Direccion, buzo: Buzo): Tablero = {
-//    Tablero(buscarBuzoYMoverEnDireccion(direccion, buzo, List(), this.posiciones))
-//      Tablero(buscarBuzoYMoverEnDireccion(direccion, buzo, List(), this.posiciones))
-//    Option.empty[Ubicacion] {}
-null
+  def mover(direccion: Direccion, buzo: Buzo, cantidadDePosicionesAMover: Int): Tablero = {
+    var resultadoBusqueda = buscar(List(), null, this.ubicaciones, buzo)
+    direccion match {
+      case Subir => {
+        var ls = resultadoBusqueda._1 :+ sacarBuzo(buzo, resultadoBusqueda._2)
+        var desplazamiento = calcularDesplazamiento(ls.reverse, cantidadDePosicionesAMover)
+        Tablero(desplazar(buzo, ls.reverse, desplazamiento).reverse ++ resultadoBusqueda._3) //tengo que dar vuelta la lista para que el submarino quede al final
+      }
+      case Bajar => {
+        var ls = sacarBuzo(buzo, resultadoBusqueda._2) :: resultadoBusqueda._3
+        var desplazamiento = calcularDesplazamiento(ls.reverse, cantidadDePosicionesAMover)
+        Tablero(resultadoBusqueda._1 ++ desplazar(buzo, ls, desplazamiento)) //tengo que dar vuelta la lista para que el submarino quede al final
+      }
+    }
   }
 
-  def buscarBuzoYMoverEnDireccion(direccion: Direccion, buzo: Buzo, posiciones: List[Casillero]) : List[Casillero] = {
-    posiciones.span(_.buzo == buzo)
-    direccion match {
-      case Arriba => posiciones.foldRight(List[Casillero]()) { (i,acc) => i::acc }
-      case Abajo => posiciones.foldLeft(List[Casillero]()) { (acc,i) => i::acc }.reverse
+  def calcularDesplazamiento(ubicaciones: List[Ubicacion], cantidadDePosicionesAMover: Int): Int = {
+    var cantidadUbicacionesDisponibles = contarUbicacionesDisponibles(ubicaciones)
+    if (cantidadUbicacionesDisponibles < cantidadDePosicionesAMover)
+      return cantidadUbicacionesDisponibles
+    else
+      return cantidadDePosicionesAMover
+  }
+
+  def mover(direccion: Direccion, buzo: Buzo): Tablero = {
+    mover(direccion, buzo, 1)
+  }
+
+  private def contarUbicacionesDisponibles(ubicaciones: List[Ubicacion]): Int = {
+    ubicaciones match {
+      case List() => 0
+      case List(Submarino(_)) => 1
+      case Casillero(_,_,_)::ls => 1 + contarUbicacionesDisponibles(ls)
+    }
+  }
+
+  private def desplazar(buzo: Buzo, ubicaciones: List[Ubicacion], cantidad: Int): List[Ubicacion] = {
+    (ubicaciones, cantidad) match {
+      case (List(), _) => List()
+      case (Submarino(lsBuzos)::ls, 0) => Submarino(buzo::lsBuzos)::desplazar(buzo,ls,cantidad-1)
+      case (Casillero(null,rs,pf)::ls, 0) => Casillero(buzo,rs,pf) :: desplazar(buzo,ls,cantidad-1)
+      case (ubicacion::ls, 0) => ubicacion :: desplazar(buzo,ls,0)
+      case (ubicacion::ls, _) => ubicacion :: desplazar(buzo,ls,cantidad-1)
+    }
+  }
+
+//  private def moverBuzoAlFinal(buzo: Buzo, casilleros: List[Casillero]): List[Casillero] = {
+//    var c = casilleros.last
+//    casilleros.init :+ Casillero(buzo, c.reliquia, c.profundidad)
+//  }
+//  private def moverBuzoAlInicio(buzo: Buzo, casilleros: List[Casillero]): List[Casillero] = {
+//    var c = casilleros.head
+//    Casillero(buzo, c.reliquia, c.profundidad) :: casilleros.tail
+//  }
+  private def sacarBuzo(buzo: Buzo, ubicacion: Ubicacion): Ubicacion = {
+    ubicacion match {
+      case Casillero(unBuzo, reliquia, profundidad) => Casillero(null, reliquia, profundidad)
+      case Submarino(ls) => Submarino(ls.filter(_.nombre != buzo.nombre))
     }
   }
 
   def buscar(
-              casillerosAnteriores: List[Casillero],
-              casilleroActual: Casillero,
-              casillerosSiguientes: List[Casillero],
-              buzo: Buzo) : (List[Casillero], Casillero, List[Casillero], Buzo) = {
+              ubicacionesAnteriores: List[Ubicacion],
+              ubicacionActual: Ubicacion,
+              ubicacionesSiguientes: List[Ubicacion],
+              buzo: Buzo) : (List[Ubicacion], Ubicacion, List[Ubicacion], Buzo) = {
 
-    (casillerosAnteriores, casilleroActual, casillerosSiguientes) match {
+    (ubicacionesAnteriores, ubicacionActual, ubicacionesSiguientes) match {
       case (p, c, List()) => (p, c, List(), buzo)
       case (List(), null, sigCasillero::sigs) => buscar(List(), sigCasillero, sigs, buzo)
-      case (prevs, Casillero(Buzo(buzo.nombre,_), r), sigs) => (prevs, Casillero(buzo, r), sigs, buzo)
+      case (prevs, Casillero(Buzo(buzo.nombre,_), r, p), sigs) => (prevs, Casillero(buzo, r, p), sigs, buzo)
       case (prevs, casillero, sigCasillero::sigs) => buscar((prevs :+ casillero), sigCasillero, sigs, buzo)
     }
 
   }
 
-//  def buscarBuzoYMoverEnDireccion(
-//                           direccion: Direccion,
-//                           buzoAMover: Buzo,
-//                           posicionesInferiores: List[Ubicacion],
-//                           posicionesSuperiores: List[Ubicacion]
-//                          ): List[Ubicacion] = (direccion, buzoAMover, posicionesInferiores, posicionesSuperiores) match {
-//    case (direccion, buzoAMover, posicionesInferiores, List()) => posicionesInferiores
-//    case (direccion, buzoAMover, posicionesInferiores, posicion::posicionesSuperiores) =>
-//      if ( posicion.buzos.exists(b => buzoAMover.equals(b)) )
-//        moverBuzoEnDireccion(direccion, buzoAMover, posicionesInferiores, posicion, posicionesSuperiores)
-//      else
-//        buscarBuzoYMoverEnDireccion(direccion, buzoAMover, posicionesInferiores, posicionesSuperiores)
-//  }
-//
-//  def moverBuzoEnDireccion(
-//                   direccion: Direccion,
-//                   buzo: Buzo,
-//                   posicionesInferiores: List[Ubicacion],
-//                   posicion: Ubicacion,
-//                   posicionesSuperiores: List[Ubicacion]
-//                  ) : List[Ubicacion] = (direccion, buzo, posicionesInferiores, posicion, posicionesSuperiores) match {
-//    case (Arriba, buzo, posicionesInferiores, Submarino(buzos, reliquias), posicionesSuperiores) =>
-//      posicionesInferiores ++ (sacarBuzo(posicion, buzo) :: posicionesSuperiores)
-//    case (Abajo, buzo, posicionesInferiores, Submarino(buzos, reliquias), posicionesSuperiores) =>
-//      posicionesInferiores ++ (sacarBuzo(posicion, buzo):: posicionesSuperiores)
-//  }
-//
-//  def sacarBuzo(posicion: Ubicacion, buzo: Buzo) : Ubicacion = (posicion, buzo) match {
-//    case Submarino(buzos, reliquias) => Submarino(buzos.filter(b => buzo.equals(b)), reliquias)
-//    case Casillero(buzos, reliquias) => Casillero(buzos.filter(b => buzo.equals(b)), reliquias)
-//  }
-//
-//  def ponerBuzoEnPrimeraPosicion (posiciones: List[Ubicacion], buzo: Buzo): List[Ubicacion]  = {
-//    var primerPosicion = posiciones.head
-//    var restoDeElementos = posiciones.tail
-//  }
-
-//  def removerBuzoDePosicion(posicion: Ubicacion, buzo: Buzo) : Ubicacion = (posicion, buzo) match {
-//    Nil
-//  }
-
 }
 
-case class Casillero( buzo: Buzo, reliquia: Reliquia )
+class Ubicacion
+
+case class Submarino(buzos: List[Buzo]) extends Ubicacion
+case class Casillero( buzo: Buzo, reliquia: Reliquia, profundidad: Profundidad) extends Ubicacion
+
+class Profundidad(minValor: Int, maxValor: Int)
+
+case object Maxima extends Profundidad(12,15)
+case object Alta   extends Profundidad( 8,11)
+case object Media  extends Profundidad( 4, 7)
+case object Baja   extends Profundidad( 0, 3)
