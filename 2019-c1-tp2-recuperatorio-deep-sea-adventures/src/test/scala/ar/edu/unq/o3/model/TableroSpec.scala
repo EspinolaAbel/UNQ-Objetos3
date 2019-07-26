@@ -1,6 +1,5 @@
-import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
-import ar.edu.unq.o3.{Bajar, Subir}
 import ar.edu.unq.o3.model._
+import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
 
 class TableroSpec extends FunSpec with Matchers with BeforeAndAfter {
 

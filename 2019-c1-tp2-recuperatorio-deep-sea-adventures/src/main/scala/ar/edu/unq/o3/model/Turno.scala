@@ -1,6 +1,6 @@
 package ar.edu.unq.o3.model
 
-import ar.edu.unq.o3.{Accion, Aleatoriedad, Direccion, Juego}
+import ar.edu.unq.o3.{Aleatoriedad, Juego}
 
 class Turno(buzo: Buzo, juego: Juego) {
   var direccion: Direccion = null
@@ -35,3 +35,8 @@ class Turno(buzo: Buzo, juego: Juego) {
   }
 
 }
+
+class Accion
+case object RecogerReliquia extends Accion
+case object AbandonarReliquia extends Accion
+case object NoHacerNada extends Accion
