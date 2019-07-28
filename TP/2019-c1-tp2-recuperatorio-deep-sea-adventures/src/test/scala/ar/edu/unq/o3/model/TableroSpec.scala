@@ -1,6 +1,5 @@
-import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
-import ar.edu.unq.o3.{Bajar, Subir}
 import ar.edu.unq.o3.model._
+import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
 
 class TableroSpec extends FunSpec with Matchers with BeforeAndAfter {
 
@@ -166,7 +165,6 @@ class TableroSpec extends FunSpec with Matchers with BeforeAndAfter {
 
     it ("intento mover al buzo buscado 0 lugares hacia abajo pero queda donde esta") {
       var posicionesIniciales = List (
-        Casillero(null, null, Baja),
         Casillero(null, null, Baja),
         Casillero(buzoBuscado, null, Baja),
         Casillero(null, null, Baja),
