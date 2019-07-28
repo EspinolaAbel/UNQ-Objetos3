@@ -1,0 +1,21 @@
+              Fecha     Unidad   Ejercitación                                                       
+     2          1       22-Mar   - Intro a la Materia. 
+- Repaso Objetos y Paradigmas con Ejercicio 
+     3          2       29-Mar   - Intro a Mixins: limitaciones de la herencia simple. Comportamient       Enunciado TP 1 - Mixins (Scala)       
+     4          3        5-Apr   - Mixins (2): Stackable Trait Pattern. abstract override, super din
+     5          4       12-Apr   Corrección: Checkpoint TP 1                                                       Checkpoint TP1                
+     6          5       19-Apr   Feriado: Viernes Santo                                             
+     7          6       26-Apr   Corrección: TP 1                                                                 Entrega Final TP1              
+     8          7        3-May   Intro a funcional. Ejercicio de DocDB: case classes, options, inmutReentrega TP1 / Enunciado TP 2 - FP + OOP (Sc
+     9          8       10-May   Funciones (Composición. Orden superior. Aplicación parcial, Partial
+    10          9       17-May   Corrección: Checkpoint TP 2                                                       Checkpoint TP 2               
+    11         10       24-May   Ejercicio Combinatorio FP+OOP                                      
+    12         11       31-May   Intro a Ruby. Metaprogramación en Ruby. Introspection. Self modific
+    13         12        7-Jun   Corrección: TP 2                                                                Entrega Final TP 2              
+    14         13       14-Jun   Autoclase. Metamodelo. method_missing. Instance_eval, class_eval, eReentrega TP2 / Enunciado TP3 Metaprogramació
+    15         14       21-Jun   Ejercicio Combinatorio Metaprogramación                            
+    16         15       28-Jun   Corrección: Checkpoint TP 3                                                       Checkpoint TP 3               
+    17         16        5-Jul   BONUS: Metaprogramación tipada                                     
+    18         17       12-Jul   Corrección: TP 3                                                                Entrega Final TP 3              
+    19         18       19-Jul   Recuperatorio                                                                      Reentrega TP3                
+    20         19       26-Jul   Recuperatorio                                                      
